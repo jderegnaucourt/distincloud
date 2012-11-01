@@ -1,0 +1,2 @@
+serviceClass: com.distincloud.client.GreetingService
+path: 388C1DBF1AE8E062A0929E9FCCEA9A6D.gwt.rpc

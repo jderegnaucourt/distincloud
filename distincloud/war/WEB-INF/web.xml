@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+              http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5"
+         xmlns="http://java.sun.com/xml/ns/javaee">
+
+  <!-- Servlets -->
+
+  
+  <servlet>
+    <servlet-name>MockServGeneral</servlet-name>
+    <servlet-class>com.distincloud.server.MockServGeneral</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>MockServGeneral</servlet-name>
+    <url-pattern>/mock/ontology</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>MockServRelatedness</servlet-name>
+    <servlet-class>com.distincloud.server.MockServRelatedness</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>MockServRelatedness</servlet-name>
+    <url-pattern>/mock/ontology/relatedness</url-pattern>
+  </servlet-mapping>
+  
+  <!-- Default page to serve -->
+  <welcome-file-list>
+    <welcome-file>Distincloud.html</welcome-file>
+  </welcome-file-list>
+
+</web-app>
