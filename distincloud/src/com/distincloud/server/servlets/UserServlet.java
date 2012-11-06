@@ -21,8 +21,8 @@ import com.distincloud.server.MockService;
  * GET /users/[user_id]/storage/
  * lists the different comparisons made by a user
  */
-
-public class StorageServlet extends HttpServlet {
+ 
+public class UserServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -31,8 +31,8 @@ public class StorageServlet extends HttpServlet {
 			throws ServletException, IOException {
 		String query = req.getQueryString();
 		String requestURI = req.getRequestURI();
-		
-		// DistincloudEngine de = DistincloudEngine.getInstance();
+		String[] regex = requestURI.split("/");
+		DistincloudEngine de = DistincloudEngine.getInstance();
 		/*
 		try {
 			JSONObject jsonQuery = new JSONObject(query);
@@ -42,7 +42,8 @@ public class StorageServlet extends HttpServlet {
 		}
 		*/
 		PrintWriter out = resp.getWriter();
-		out.println(requestURI);		
+		if(regex.length == 2) out.println("list of users :");
+		else out.println(regex[2]);
 		out.flush();
 	}
 	

@@ -15,8 +15,8 @@ public class UsersModule {
 	
 	public UsersModule(PersistenceManager persistenceManager) {
 		_persistenceManager = persistenceManager;
-		refreshUserCache();
 		createNewUser("testUser");
+		refreshUserCache();	
 	}
 
 	public String createNewUser(String username) {

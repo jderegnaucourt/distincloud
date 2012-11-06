@@ -10,23 +10,21 @@ import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
 
-import ontologyInterface.Ontology;
-
 @PersistenceCapable
 public class User implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-
+	
+	@PrimaryKey
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private Key key;
+	
 	/**
 	 * User display name
 	 */
 	
-	@PrimaryKey
 	@Persistent
-	protected String _username;
-	
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private Key key;
+	protected String _strUsername;
 	
 	/**
 	 * List of comparisons performed by this user
@@ -39,15 +37,15 @@ public class User implements Serializable {
 	 * Ontologies used by this user
 	 */
 	
-	@Persistent
-	protected List<Ontology> _ontologies;
+	// @Persistent
+	//protected List<Ontology> _ontologies;
 	
 	public User(String username) {
-		this._username = username;
+		this._strUsername = username;
 	}
 	
 	public void addWordComparison(WordComparison newComparison) {
-		newComparison.setOwner(this._username);
+		newComparison.setOwner(this._strUsername);
 		_comparisons.add(newComparison);
 	}
 
