@@ -7,9 +7,8 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-                                                              -->
     <link type="text/css" rel="stylesheet" href="Distincloud.css">
-	<title>Web Application Starter Project</title>                                         -->
+	<title>Distincloud Project</title>
     <script type="text/javascript" language="javascript" src="distincloud/distincloud.nocache.js"></script>
     
   </head>
@@ -29,6 +28,50 @@
     <h1>Distincloud Project</h1>
 	<a href="/mock/ontology">/mock/ontology</a><br>
 	<a href="/mock/ontology/relatedness">/mock/ontology/relatedness</a>
-   
+    
+    <script type="text/javascript">
+    	function console() {
+    		var query = document.getElementById('consoleInput').value ;
+			
+			var data = query.split(' ') ;
+			var uri = data[0] ;
+			data[0] = '' ;
+			data = data.join('&') ;
+			
+			document.getElementById('consoleInput').value = "" ;
+			document.getElementById('consoleOutput').innerHTML += "<br />> "+query ;
+    		
+			var var_return = true ;
+			if(window.XMLHttpRequest) {
+				var request = new XMLHttpRequest() ;
+			}
+			else {
+				var_return = false ;
+			}
+			
+			if(var_return) {
+				request.onreadystatechange = function() {
+					if(request.readyState == 4) {
+						if(request.responseText != '') {
+							document.getElementById('consoleOutput').innerHTML += "<br />"+request.responseText ;
+						}
+					}
+					else if(request.readyState == 1) { }
+				};
+				
+				request.open('POST', uri, true) ;
+				request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				alert(data) ;
+				request.send(data) ; 
+			}
+			else { }
+	
+    	}
+    </script>
+    <div id="consoleOutput" style="border: 1px solid #888888; width: 95%; height: 400px; overflow: scroll;"></div>
+    <form method="GET" action="#" onsubmit="console();">
+	    <input id="consoleInput" style="border: 1px solid #888888; width: 95%;" />
+	</form>
+    
   </body>
 </html>
