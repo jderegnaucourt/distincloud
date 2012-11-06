@@ -19,13 +19,13 @@
   </servlet-mapping>
   
   <servlet>
-    <servlet-name>MockServRelatedness</servlet-name>
-    <servlet-class>com.distincloud.server.MockServRelatedness</servlet-class>
+    <servlet-name>StorageServlet</servlet-name>
+    <servlet-class>com.distincloud.server.servlets.StorageServlet</servlet-class>
   </servlet>
   
   <servlet-mapping>
-    <servlet-name>MockServRelatedness</servlet-name>
-    <url-pattern>/mock/ontology/relatedness</url-pattern>
+    <servlet-name>StorageServlet</servlet-name>
+    <url-pattern>/users/*</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->

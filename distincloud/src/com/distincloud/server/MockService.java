@@ -27,7 +27,7 @@ public class MockService {
 		else return "null";
 	}
 	
-	int calculateRelatedness(int max, String word1, String word2) {
+	public int calculateRelatedness(int max, String word1, String word2) {
 		try {
 			return myOntology.getRelatedness(max, word1, new HashSet<Integer>(), word2, new HashSet<Integer>(), SemRelation.allSemanticRelations);
 		} catch (OntologyException e) {

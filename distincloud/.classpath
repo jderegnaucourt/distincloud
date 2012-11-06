@@ -7,5 +7,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/Users/jules/Workspace/dev/java/gwt/externals/jdom-1.0.jar"/>
 	<classpathentry kind="lib" path="/Users/jules/Workspace/dev/java/gwt/externals/junit-4.11-beta-1.jar"/>
+	<classpathentry kind="lib" path="/Users/jules/Workspace/dev/java/gwt/externals/json-org.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
