@@ -33,7 +33,7 @@ public class User implements Serializable {
 	 */
 	
 	@Persistent
-	protected List<WordComparison> _comparisons;
+	protected List<WordComparisonResult> _comparisons;
 	
 	/**
 	 * Ontologies used by this user
@@ -46,7 +46,7 @@ public class User implements Serializable {
 		this._strUsername = username;
 	}
 	
-	public void addWordComparison(WordComparison newComparison) {
+	public void addWordComparison(WordComparisonResult newComparison) {
 		newComparison.setOwner(this._strUsername);
 		_comparisons.add(newComparison);
 	}

@@ -6,7 +6,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
 @PersistenceCapable
-public class WordComparison implements Serializable {
+public class WordComparisonResult implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -26,7 +26,7 @@ public class WordComparison implements Serializable {
 	@Persistent
 	int _iRelatedness;
 	
-	public WordComparison(String word1, String word2, int maxRelatedness, int relatedness) {
+	public WordComparisonResult(String word1, String word2, int maxRelatedness, int relatedness) {
 		this._strWord1 = word1;
 		this._strWord2 = word2;
 		this._iMaxRelatedness = maxRelatedness;
