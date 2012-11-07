@@ -8,6 +8,8 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+import ontologyImpl.OntologyImpl;
+
 import com.google.appengine.api.datastore.Key;
 
 @PersistenceCapable
@@ -37,8 +39,8 @@ public class User implements Serializable {
 	 * Ontologies used by this user
 	 */
 	
-	// @Persistent
-	//protected List<Ontology> _ontologies;
+	@Persistent
+	protected List<OntologyImpl> _ontologies;
 	
 	public User(String username) {
 		this._strUsername = username;
