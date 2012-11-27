@@ -8,12 +8,12 @@ import javax.jdo.Query;
 
 import com.distincloud.server.data.User;
 
-public class UsersModule {
+public class mUsers {
 	
 	protected PersistenceManager _persistenceManager = null;
 	protected List<User> _userList = new ArrayList<User>();
 	
-	public UsersModule(PersistenceManager persistenceManager) {
+	public mUsers(PersistenceManager persistenceManager) {
 		_persistenceManager = persistenceManager;
 		createNewUser("testUser");
 		refreshUserCache();	

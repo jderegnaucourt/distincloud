@@ -2,7 +2,8 @@ package com.distincloud.server;
 
 import javax.jdo.PersistenceManager;
 
-import com.distincloud.server.modules.UsersModule;
+import com.distincloud.server.modules.mOntologies;
+import com.distincloud.server.modules.mUsers;
 
 
 public class DistincloudEngine {
@@ -10,11 +11,12 @@ public class DistincloudEngine {
 	protected static  DistincloudEngine _engine = null;
 	protected PersistenceManager _persistenceManager = null;
 	
-	protected UsersModule _mUsers = null;
+	protected mUsers _mUsers = null;
+	protected mOntologies _mOntologies = null;
 	
 	public DistincloudEngine() {
 		_persistenceManager = PMF.get().getPersistenceManager();
-		_mUsers = new UsersModule(_persistenceManager);
+		_mUsers = new mUsers(_persistenceManager);
 	}
 	
 	public String createUser(String username) {
