@@ -2,6 +2,7 @@ package com.distincloud.server.modules;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
@@ -12,29 +13,44 @@ public class mUsers {
 	
 	protected PersistenceManager _persistenceManager = null;
 	protected List<User> _userList = new ArrayList<User>();
+	private static final Logger log = Logger.getLogger(mUsers.class.getName());
 	
 	public mUsers(PersistenceManager persistenceManager) {
+		log.info("[mUsers] Constructor called");
 		_persistenceManager = persistenceManager;
-		createNewUser("testUser");
+		generateSampleUsers();
 		refreshUserCache();	
 	}
 
+	private void generateSampleUsers() {
+		log.info("[mUsers] generating sample users");
+		createNewUser("testUser");
+		createNewUser("anotherTestUser");
+		createNewUser("lastTestUser");
+	}
+
 	public String createNewUser(String username) {
-		if(UserExists(username)) return "null";
+		log.info("[mUsers] trying to create user : "+username);
+		if(UserExists(username)) {
+			log.info("[mUsers] user already exists : "+username);
+			return "null";
+		}
 		else {
 			String newUserKey = addUserToDatabase(username);
+			log.info("[mUsers] user has been created : "+username);
 			refreshUserCache();
 			return newUserKey;
 		}
 	}
 	
 	private void refreshUserCache() {
+		log.info("[mUsers] refreshing Users cache");
 		_userList = fetchAllUser();
 	}
 
 	private String addUserToDatabase(String username) {
 		_persistenceManager.currentTransaction().begin();
-		User newUser = new User(username);
+		User newUser = new User(username, "pass");
 		_persistenceManager.makePersistent(newUser);
 		_persistenceManager.currentTransaction().commit();
 		return newUser.getKey();
@@ -49,10 +65,21 @@ public class mUsers {
 
 	@SuppressWarnings("unchecked")
 	public boolean UserExists(String username) {
-		Query query = _persistenceManager.newQuery(User.class, "_strUsername == _strSUsernameParam");
+		Query query = _persistenceManager.newQuery(User.class, "_strUsername == _strUsernameParam");
 		query.declareParameters("String _strUsernameParam");	
 		List<User> queryResult = (List<User>) query.execute(username);
 		if(queryResult.isEmpty()) return false;
 		else return true;
+	}
+
+	public List<User> getCachedUserList() {
+		return _userList;
+	}
+
+	public User getCachedUser(String username) {
+		for(User usr : _userList) {
+			if ( usr.getUsername().matches(username) ) return usr;
+		}
+		return null;
 	}
 }

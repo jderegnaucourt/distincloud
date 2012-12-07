@@ -7,11 +7,13 @@ import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import ontologyImpl.OntologyImpl;
 
 import com.google.appengine.api.datastore.Key;
 
+@XmlRootElement
 @PersistenceCapable
 public class User implements Serializable {
 	
@@ -21,6 +23,7 @@ public class User implements Serializable {
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Key key;
 	
+	
 	/**
 	 * User display name
 	 */
@@ -28,35 +31,46 @@ public class User implements Serializable {
 	@Persistent
 	protected String _strUsername;
 	
+	@Persistent
+	protected String _strPassword;
+	
+
 	/**
 	 * List of comparisons performed by this user
 	 */
 	
+	/*
 	@Persistent
 	protected List<WordComparisonResult> _comparisons;
+	*/
 	
 	/**
 	 * Ontologies used by this user
 	 */
 	
+	/*
 	@Persistent
 	protected List<OntologyImpl> _ontologies;
+	*/
 	
-	public User(String username) {
+	public User() {}
+	
+	public User(String username, String password) {
 		this._strUsername = username;
+		this._strPassword = password;
 	}
 	
 	public void addWordComparison(WordComparisonResult newComparison) {
 		newComparison.setOwner(this._strUsername);
-		_comparisons.add(newComparison);
-	}
-
-	public void setKey(Key key) {
-		this.key = key;
+		// _comparisons.add(newComparison);
 	}
 
 	public String getKey() {
 		return key.toString();
+	}
+	
+	public String getUsername() {
+		return _strUsername;
 	}
 	
 }
