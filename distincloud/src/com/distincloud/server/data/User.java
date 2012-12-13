@@ -13,8 +13,8 @@ import ontologyImpl.OntologyImpl;
 
 import com.google.appengine.api.datastore.Key;
 
+@PersistenceCapable(detachable="true")
 @XmlRootElement
-@PersistenceCapable
 public class User implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

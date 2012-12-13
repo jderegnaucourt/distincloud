@@ -8,25 +8,18 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 
-import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 
-
 import com.distincloud.server.DistincloudEngine;
 import com.distincloud.server.data.User;
-import com.sun.jersey.api.json.JSONConfiguration;
+import com.distincloud.server.tools.Output;
 
 /**
  * @author jules
- * covers B.3 REF
- * GET /users/[user_id]/storage/
- * lists the different comparisons made by a user
  */
 
 @Path("/users/")
@@ -37,24 +30,20 @@ public class UserServices {
 
 	@GET
 	@Path("/")
-	@Produces("application/json")
-	public JSONObject getUsersAsJsonArray() {
-		JSONArray uriArray = new JSONArray();
-		for (User userEntity : _engine.fetchUserList()) {
-			UriBuilder ub = uriInfo.getAbsolutePathBuilder();
-			URI userUri = ub.
-			path(userEntity.getUsername()).
-			build();
-			uriArray.put(userUri.toASCIIString());
-		}
-		JSONObject json = new JSONObject();
-		try {
-			json.put("userCount", uriArray.length());
-			json.append("usersList", uriArray);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return json;
+	@Produces("text/plain")
+	public String getUsersAsJsonArray() {
+		Output out = new Output("getUsersAsJsonArray", true);
+		for(User current : _engine.fetchUserList() ) {		
+			JSONObject response = new JSONObject();
+			try {
+				response.put("username", current.getUsername());
+				response.put("key", current.getKey());	
+				out.addResponseAsJSON(response);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}	
+		}		
+		return out.toString();
 	}
 
 	@PUT
@@ -77,17 +66,27 @@ public class UserServices {
 
 	@GET
 	@Path("/{username}/")
-	@Produces("application/json")
-	public User infosForUser(@PathParam("username") String username ) {
+	@Produces("text/plain")
+	public String infosForUser(@PathParam("username") String username ) {
 		User current = _engine.checkExistanceOf(username);
-		return current;
+		Output out;
+		if(current == null) {
+			out = new Output("infosForUser", false);
+		}
+		else {
+			out = new Output("infosForUser", true);
+			JSONObject response = new JSONObject();
+			try {
+				response.put("username", current.getUsername());
+				response.put("key", current.getKey());	
+				out.addResponseAsJSON(response);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}				
+		}
+		return out.toString();
 	}
-	
-	@GET @Produces("application/json")
-	@Path("/debug/creation/{username}/")
-	public User creationDebug(@PathParam("username") String username ) {
-		return new User(username, "pass");
-	}
+
 
 	@GET
 	@Path("/{username}/storage")

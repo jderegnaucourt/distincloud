@@ -19,7 +19,6 @@ public class WordComparisonResult implements Serializable {
 	@Persistent
 	String _strWord2;
 	
-
 	@Persistent
 	int _iMaxRelatedness;
 	
