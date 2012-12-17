@@ -2,6 +2,8 @@ package com.distincloud.server;
 
 import java.util.HashSet;
 
+import com.distincloud.server.data.WordComparisonResult;
+
 import ontologyImpl.MainSense;
 import ontologyImpl.MainWord;
 import ontologyInterface.OntologyException;
@@ -27,13 +29,15 @@ public class MockService {
 		else return "null";
 	}
 	
-	public int calculateRelatedness(int max, String word1, String word2) {
-		try {
-			return myOntology.getRelatedness(max, word1, new HashSet<Integer>(), word2, new HashSet<Integer>(), SemRelation.allSemanticRelations);
+	public WordComparisonResult calculateRelatedness(int max, String word1, String word2) {
+		try {		
+			 int relat = myOntology.getRelatedness(max, word1, new HashSet<Integer>(), word2, new HashSet<Integer>(), SemRelation.allSemanticRelations);
+			 WordComparisonResult result = new WordComparisonResult(word1, word2, max, relat);
+			 return result;
 		} catch (OntologyException e) {
 			e.printStackTrace();
 		}
-		return 0;
+		return null;
 	}
 
 	private void generateWords() {

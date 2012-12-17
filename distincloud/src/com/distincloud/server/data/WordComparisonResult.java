@@ -2,13 +2,22 @@ package com.distincloud.server.data;
 
 import java.io.Serializable;
 
+import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
+
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 
 @PersistenceCapable
 public class WordComparisonResult implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
+	
+	@PrimaryKey
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private Key key;
 	
 	@Persistent
 	String _strOwner;
@@ -54,5 +63,9 @@ public class WordComparisonResult implements Serializable {
 
 	public String getWord2() {
 		return _strWord2;
+	}
+
+	public String getKey() {
+		return KeyFactory.keyToString(key);
 	}
 }

@@ -1,4 +1,10 @@
-<!-- Indices written at Thu, 13 Dec 2012 12:03:16 CET -->
+<!-- Indices written at Mon, 17 Dec 2012 13:31:04 CET -->
 
-<datastore-indexes/>
+<datastore-indexes>
 
+    <!-- Used 1 time in query history -->
+    <datastore-index kind="WordComparisonResult" ancestor="true" source="auto">
+        <property name="comparisons_INTEGER_IDX" direction="asc"/>
+    </datastore-index>
+
+</datastore-indexes>

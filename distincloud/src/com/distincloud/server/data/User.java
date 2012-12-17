@@ -39,10 +39,8 @@ public class User implements Serializable {
 	 * List of comparisons performed by this user
 	 */
 	
-	/*
 	@Persistent
 	protected List<WordComparisonResult> _comparisons;
-	*/
 	
 	/**
 	 * Ontologies used by this user
@@ -62,7 +60,11 @@ public class User implements Serializable {
 	
 	public void addWordComparison(WordComparisonResult newComparison) {
 		newComparison.setOwner(this._strUsername);
-		// _comparisons.add(newComparison);
+		_comparisons.add(newComparison);
+	}
+	
+	public List<WordComparisonResult> getWCRList() {
+		return this._comparisons;
 	}
 
 	public String getKey() {
@@ -71,6 +73,13 @@ public class User implements Serializable {
 	
 	public String getUsername() {
 		return _strUsername;
+	}
+
+	public WordComparisonResult getWCR(String key) {
+		for(WordComparisonResult wcr : _comparisons) {
+			if(wcr.getKey().matches(key)) return wcr;
+		}
+		return null;
 	}
 	
 }

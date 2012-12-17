@@ -82,4 +82,11 @@ public class mUsers {
 		}
 		return null;
 	}
+	
+	public User getCachedUserWithKey(String key) {
+		for(User usr : _userList) {
+			if ( usr.getKey().matches(key) ) return usr;
+		}
+		return null;
+	}
 }
