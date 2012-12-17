@@ -43,6 +43,7 @@ public class UserServices {
 			try {
 				response.put("username", current.getUsername());
 				response.put("key", current.getKey());	
+				response.put("storageSize", current.getWCRList().size());	
 				out.addResponseAsJSON(response);
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -53,29 +54,41 @@ public class UserServices {
 
 	@PUT
 	@Path("/{username}/")
-	@Produces("application/json")
-	public JSONObject requestUserCreation(@PathParam("username") String username) {
-		String key = _engine.requestUserCreation(username);
-		JSONObject jsonResponse = new JSONObject();
-		try {
-			if(key != "null") {
-				jsonResponse.put("bUserCreated", true);
-				jsonResponse.append("userKey", key);
+	@Produces("text/plain")
+	public String requestUserCreation(@PathParam("username") String username) {
+		String response = _engine.requestUserCreation(username);
+		if(!response.matches("null")) {		
+			Output out = new Output("USER_CREATION", true);
+			try {
+				JSONObject jsonResponse = new JSONObject();
+				jsonResponse.put("username", username);
+				jsonResponse.append("storage", "/resources/users/"+username+"/storage/");
+			} catch (JSONException e) {
+				e.printStackTrace();
 			}
-			else jsonResponse.put("bUserCreated", false);
-		} catch (JSONException e) {
-			e.printStackTrace();
 		}
-		return jsonResponse;
+		return new Output("USER_CREATION", false).toString();
 	}
 
 	@GET
 	@Path("/{username}/")
 	@Produces("text/plain")
-	public String infosForUser(@PathParam("username") String username ) {
+	public String infosForUser(@PathParam("username") String username , @Context HttpServletRequest req) {
 		User current = _engine.checkExistanceOf(username);
+		String userKey = "null" ;
+
+		if( !buff(req).matches("null")) {
+			try {
+				JSONObject jso = new JSONObject(buff(req));
+				JSONArray infos = jso.getJSONArray("infos");
+				userKey = (String) infos.getJSONObject(0).get("uesrKey");
+			} catch (JSONException e1) {
+				e1.printStackTrace();
+			}
+		}
+		
 		Output out;
-		if(current == null) {
+		if(buff(req).matches("null") || current == null || !(current.getKey().matches(userKey))) {
 			out = new Output("infosForUser", false);
 		}
 		else {
@@ -100,7 +113,7 @@ public class UserServices {
 		User usr = _engine.checkExistanceOf(username);
 		Output out = new Output("WCR_CREATED", true);
 		List<JSONObject> response = new ArrayList<JSONObject>();
-		
+
 		for(WordComparisonResult wcr : usr.getWCRList()) {
 			JSONObject toadd = new JSONObject();
 			try {
@@ -113,14 +126,14 @@ public class UserServices {
 		out.addResponseAsJSONList(response);
 		return out.toString();
 	}
-	
+
 	@GET
 	@Path("/{username}/storage/{key}")
 	@Produces("text/plain")
 	public String getWCRWithKey(@PathParam("username") String username , @PathParam("key") String key) {
 		User usr = _engine.checkExistanceOf(username);
 		WordComparisonResult wcr = usr.getWCR(key);
-		
+
 		Output out = new Output("WCR_CREATED", true);
 		JSONObject response = new JSONObject();
 		try {
@@ -179,8 +192,7 @@ public class UserServices {
 			reader.close();
 			return sb.toString();
 		} catch (IOException e) {
-			e.printStackTrace();
+			return "null";
 		}
-		return "null";
 	}
 } 

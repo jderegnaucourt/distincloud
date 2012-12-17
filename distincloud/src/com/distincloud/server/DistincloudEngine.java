@@ -32,8 +32,6 @@ public class DistincloudEngine {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		User ontoTest = _mUsers.getCachedUser("ontoTest");
-		proceed(ontoTest, 8, "people", "person");
 	}
 
 	public String createUser(String username) {
@@ -58,6 +56,7 @@ public class DistincloudEngine {
 	}
 
 	public String requestUserCreation(String username) {
+		if( _mUsers.createNewUser(username) == null ) return "null";
 		return _mUsers.createNewUser(username).getUsername();
 	}
 	
