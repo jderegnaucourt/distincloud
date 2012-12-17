@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
+import ontologyInterface.Ontology;
 import ontologyInterface.SemRelation;
 
 public abstract class AbstractWord implements
@@ -11,9 +12,9 @@ public abstract class AbstractWord implements
   private static final long serialVersionUID =
       7102622853808015183L;
   protected String text;
-  protected transient OntologyImpl ontology;
+  protected transient Ontology ontology;
 
-  public AbstractWord(String text, OntologyImpl ontology) {
+  public AbstractWord(String text, Ontology ontology) {
     super();
     this.text = text;
     this.ontology = ontology;
@@ -27,11 +28,11 @@ public abstract class AbstractWord implements
     return text;
   }
 
-  public void setOntology(OntologyImpl ontology) {
+  public void setOntology(Ontology ontology) {
     this.ontology = ontology;
   }
 
-  public OntologyImpl getOntology() {
+  public Ontology getOntology() {
     return ontology;
   }
 

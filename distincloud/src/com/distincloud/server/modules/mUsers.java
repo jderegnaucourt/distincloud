@@ -29,17 +29,17 @@ public class mUsers {
 		createNewUser("lastTestUser");
 	}
 
-	public String createNewUser(String username) {
+	public User createNewUser(String username) {
 		log.info("[mUsers] trying to create user : "+username);
 		if(UserExists(username)) {
 			log.info("[mUsers] user already exists : "+username);
-			return "null";
+			return null;
 		}
 		else {
-			String newUserKey = addUserToDatabase(username);
+			addUserToDatabase(username);
 			log.info("[mUsers] user has been created : "+username);
 			refreshUserCache();
-			return newUserKey;
+			return getCachedUser(username);
 		}
 	}
 	

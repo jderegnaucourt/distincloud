@@ -5,9 +5,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import ontologyImpl.ExternSense.MainWordTransientPointer;
 import ontologyInterface.ExternalSense;
 import ontologyInterface.ExternalWord;
+import ontologyInterface.MainWordTransientPointer;
+import ontologyInterface.Ontology;
 import ontologyInterface.SemRelation;
 
 public class ExternWord extends AbstractWord implements
@@ -18,7 +19,7 @@ public class ExternWord extends AbstractWord implements
       new ArrayList<ExternSense>();
   protected Serializable userData;
 
-  public ExternWord(String text, OntologyImpl ontology) {
+  public ExternWord(String text, Ontology ontology) {
     super(text, ontology);
   }
 

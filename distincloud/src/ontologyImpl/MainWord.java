@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ontologyInterface.Ontology;
 import ontologyInterface.Sense;
 import ontologyInterface.Word;
 
@@ -14,7 +15,7 @@ public class MainWord extends AbstractWord implements
   protected List<MainSense> senses =
       new ArrayList<MainSense>();
 
-  public MainWord(String text, OntologyImpl ontology) {
+  public MainWord(String text, Ontology ontology) {
     super(text, ontology);
   }
 

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 public interface ExternalSense extends Sense {
+	
   void setDefinition(String definition)
       throws IOException;
 

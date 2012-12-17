@@ -9,34 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 import ontologyInterface.ExternalSense;
+import ontologyInterface.MainWordTransientPointer;
 import ontologyInterface.SemRelation;
 
-public class ExternSense extends AbstractSense implements
-    ExternalSense {
-  public static class MainWordTransientPointer implements
-      Serializable {
-    private static final long serialVersionUID =
-        -3333713029262279060L;
-    protected transient MainWord mainWord;
-
-    public MainWordTransientPointer(MainWord mainWord) {
-      super();
-      this.mainWord = mainWord;
-    }
-
-    // for serialization needs
-    public MainWordTransientPointer() {
-      super();
-    }
-
-    public MainWord getMainWord() {
-      return mainWord;
-    }
-
-    public void setMainWord(MainWord mainWord) {
-      this.mainWord = mainWord;
-    }
-  }
+public class ExternSense extends AbstractSense implements ExternalSense {
 
   public static class LinkValue implements Serializable {
     private static final long serialVersionUID =
@@ -160,8 +136,7 @@ public class ExternSense extends AbstractSense implements
             word);
     if (wordPointer == null)
       wordPointer =
-          getWord().getOntology()
-              .insertNewMainWordPointer(
+          getWord().getOntology().insertNewMainWordPointer(
                   word);
     return new LinkValue(wordPointer, word.getSenses()
         .indexOf(
@@ -240,7 +215,7 @@ public class ExternSense extends AbstractSense implements
           if (!getWord().getOntology()
               .isMainWordPointerUsed(
                   currentLinkValue.getWordPointer()))
-            getWord().getOntology()
+        	  getWord().getOntology()
                 .removeMainWordPointer(
                     currentLinkValue.getWordPointer()
                         .getMainWord());
@@ -331,7 +306,7 @@ public class ExternSense extends AbstractSense implements
       String mainWordText, int senseIndex)
       throws IOException {
     MainWord mainWord =
-        getWord().getOntology().searchMainWordPreprocess(
+    		getWord().getOntology().searchMainWordPreprocess(
             mainWordText);
     if (mainWord == null)
       return false;
@@ -350,7 +325,7 @@ public class ExternSense extends AbstractSense implements
       String mainWordText, int senseIndex)
       throws IOException {
     MainWord mainWord =
-        getWord().getOntology().searchMainWordPreprocess(
+    		((OntologyImpl) getWord().getOntology()).searchMainWordPreprocess(
             mainWordText);
     if (mainWord == null)
       return false;
@@ -370,7 +345,7 @@ public class ExternSense extends AbstractSense implements
       String externWordText, int senseIndex)
       throws IOException {
     ExternWord externWord =
-        getWord().getOntology()
+    		getWord().getOntology()
             .searchExternWordPreprocess(
                 externWordText);
     if (externWord == null)
@@ -391,7 +366,7 @@ public class ExternSense extends AbstractSense implements
       SemRelation semRelation, String externWordText,
       int senseIndex) throws IOException {
     ExternWord externWord =
-        getWord().getOntology()
+    		getWord().getOntology()
             .searchExternWordPreprocess(
                 externWordText);
     if (externWord == null)

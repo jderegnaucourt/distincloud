@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import ontologyImpl.OntologyImpl;
 
+import com.distincloud.server.modules.mOntologies;
 import com.google.appengine.api.datastore.Key;
 
 @PersistenceCapable(detachable="true")
@@ -53,7 +54,7 @@ public class User implements Serializable {
 	
 	public User() {}
 	
-	public User(String username, String password) {
+	public User( String username, String password ) {
 		this._strUsername = username;
 		this._strPassword = password;
 	}

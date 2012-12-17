@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Set;
 
+import ontologyImpl.ExternWord;
+import ontologyImpl.MainWord;
+
 public interface Ontology {
   String getMainOntologyFileName();
 
@@ -35,4 +38,17 @@ public interface Ontology {
 
   boolean removeExternWord(String wordText)
       throws OntologyException, IOException;
+  
+  public void rebuildActiveSenseLinks();
+  public void writeMainOntology() throws IOException ;
+  public void writeExternOntology() throws IOException ;
+  
+  public MainWord searchMainWordPreprocess(String wordText) ;
+  public ExternWord searchExternWordPreprocess(String wordText) ;
+  
+  public MainWordTransientPointer searchMainWordPointer(MainWord mainWord) ;
+  public MainWordTransientPointer insertNewMainWordPointer(MainWord mainWord);
+  public boolean isMainWordPointerUsed(MainWordTransientPointer mainWordPointerUsed);
+  public void removeMainWordPointer(MainWord mainWord);
+  
 }
