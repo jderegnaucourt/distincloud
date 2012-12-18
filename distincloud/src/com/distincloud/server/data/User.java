@@ -13,6 +13,7 @@ import ontologyImpl.OntologyImpl;
 
 import com.distincloud.server.modules.mOntologies;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 
 @PersistenceCapable(detachable="true")
 @XmlRootElement
@@ -69,7 +70,7 @@ public class User implements Serializable {
 	}
 
 	public String getKey() {
-		return key.toString();
+		return KeyFactory.keyToString(key);
 	}
 	
 	public String getUsername() {

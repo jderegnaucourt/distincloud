@@ -1,5 +1,6 @@
 package com.distincloud.server;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 import javax.jdo.PersistenceManager;
@@ -56,8 +57,9 @@ public class DistincloudEngine {
 	}
 
 	public String requestUserCreation(String username) {
-		if( _mUsers.createNewUser(username) == null ) return "null";
-		return _mUsers.createNewUser(username).getUsername();
+		User current = _mUsers.createNewUser(username); 
+		if( current == null ) return "null";
+		else return current.getUsername();
 	}
 	
 	public String proceed(User user, int max, String word1, String word2) {
@@ -79,6 +81,10 @@ public class DistincloudEngine {
 
 	public String usernameForKey(String usrKey) {
 		return _mUsers.getCachedUserWithKey(usrKey).getUsername();
+	}
+
+	public User fetchUserWithUSername(String username) {
+		return _mUsers.getCachedUser(username);
 	}
 	
 }

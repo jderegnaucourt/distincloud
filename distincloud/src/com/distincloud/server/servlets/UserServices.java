@@ -1,12 +1,11 @@
 package com.distincloud.server.servlets;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -16,7 +15,6 @@ import javax.ws.rs.core.*;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
 
 import com.distincloud.server.DistincloudEngine;
 import com.distincloud.server.data.User;
@@ -32,6 +30,10 @@ public class UserServices {
 
 	@Context UriInfo uriInfo;
 	protected DistincloudEngine _engine = DistincloudEngine.getInstance();
+
+
+	public UserServices() {
+	}
 
 	@GET
 	@Path("/")
@@ -52,17 +54,58 @@ public class UserServices {
 		return out.toString();
 	}
 
+	@POST
+	@Path("/debug/")
+	@Consumes("text/plain")
+	public String printJSON(String queryContent, @Context HttpHeaders hh) {	
+		try {
+			JSONObject j = new JSONObject(queryContent);
+			System.out.println(j.get("data"));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
+		System.out.println(headerParams.getFirst("usrKey"));
+		return queryContent;
+	}
+
+	@GET
+	@Path("/{username}/")
+	@Produces("text/plain")
+	public String infosForUser( @PathParam("username") String username , @Context HttpHeaders hh ) {
+		MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
+		User current = _engine.checkExistanceOf(username);
+		Output out;
+		if( current != null && current.getKey().matches(headerParams.getFirst("usrKey")) ) {
+			out = new Output("USER_INFO", true);
+			JSONObject response = new JSONObject();
+			try {
+				response.put("username", current.getUsername());
+				response.put("userKey", current.getKey());
+				response.put("storage", "/resources/users/"+username+"/storage/");
+				out.addResponseAsJSON(response);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}	
+		}
+		else out = new Output("USER_INFO", false);			
+		return out.toString();
+	}
+
 	@PUT
 	@Path("/{username}/")
 	@Produces("text/plain")
 	public String requestUserCreation(@PathParam("username") String username) {
 		String response = _engine.requestUserCreation(username);
-		if(!response.matches("null")) {		
+		if( !response.matches("null") ) {		
 			Output out = new Output("USER_CREATION", true);
 			try {
 				JSONObject jsonResponse = new JSONObject();
 				jsonResponse.put("username", username);
-				jsonResponse.append("storage", "/resources/users/"+username+"/storage/");
+				jsonResponse.put("userKey", _engine.fetchUserWithUSername(username).getKey());
+				jsonResponse.put("storage", "/resources/users/"+username+"/storage/");
+				out.addResponseAsJSON(jsonResponse);
+				return out.toString();
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -70,129 +113,94 @@ public class UserServices {
 		return new Output("USER_CREATION", false).toString();
 	}
 
-	@GET
-	@Path("/{username}/")
-	@Produces("text/plain")
-	public String infosForUser(@PathParam("username") String username , @Context HttpServletRequest req) {
-		User current = _engine.checkExistanceOf(username);
-		String userKey = "null" ;
-
-		if( !buff(req).matches("null")) {
-			try {
-				JSONObject jso = new JSONObject(buff(req));
-				JSONArray infos = jso.getJSONArray("infos");
-				userKey = (String) infos.getJSONObject(0).get("uesrKey");
-			} catch (JSONException e1) {
-				e1.printStackTrace();
-			}
-		}
-		
-		Output out;
-		if(buff(req).matches("null") || current == null || !(current.getKey().matches(userKey))) {
-			out = new Output("infosForUser", false);
-		}
-		else {
-			out = new Output("infosForUser", true);
-			JSONObject response = new JSONObject();
-			try {
-				response.put("username", current.getUsername());
-				response.put("key", current.getKey());	
-				out.addResponseAsJSON(response);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}				
-		}
-		return out.toString();
-	}
-
 
 	@GET
 	@Path("/{username}/storage")
 	@Produces("text/plain")
-	public String getStorageContentList(@PathParam("username") String username , @Context HttpServletRequest request) {
-		User usr = _engine.checkExistanceOf(username);
-		Output out = new Output("WCR_CREATED", true);
-		List<JSONObject> response = new ArrayList<JSONObject>();
-
-		for(WordComparisonResult wcr : usr.getWCRList()) {
-			JSONObject toadd = new JSONObject();
-			try {
-				toadd.put("uri", "/users/"+username+"/storage/"+wcr.getKey());
-				response.add(toadd);
-			} catch (JSONException e) {
-				e.printStackTrace();
+	public String getStorageContentList( @PathParam("username") String username , @Context HttpHeaders hh ) {
+		MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
+		User current = _engine.checkExistanceOf(username);
+		Output out;
+		if( current != null && current.getKey().matches(headerParams.getFirst("usrKey")) ) {
+			out = new Output("STORAGE_DISPLAY", true);
+			List<JSONObject> response = new ArrayList<JSONObject>();
+			for(WordComparisonResult wcr : current.getWCRList()) {
+				JSONObject toadd = new JSONObject();
+				try {
+					toadd.put("uri", "/users/"+username+"/storage/"+wcr.getKey());
+					response.add(toadd);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 			}
+			out.addResponseAsJSONList(response);
 		}
-		out.addResponseAsJSONList(response);
+		else out = new Output("STORAGE_DISPLAY", false);		
 		return out.toString();
 	}
 
 	@GET
 	@Path("/{username}/storage/{key}")
 	@Produces("text/plain")
-	public String getWCRWithKey(@PathParam("username") String username , @PathParam("key") String key) {
-		User usr = _engine.checkExistanceOf(username);
-		WordComparisonResult wcr = usr.getWCR(key);
+	public String getWCRWithKey( @PathParam("username") String username , @PathParam("key") String key , @Context HttpHeaders hh ) {
 
-		Output out = new Output("WCR_CREATED", true);
-		JSONObject response = new JSONObject();
-		try {
-			response.put("uri", "/users/"+username+"/storage/"+key);
-			response.put("word1", wcr.getWord1());
-			response.put("word2", wcr.getWord2());
-			response.put("relatedness", wcr.getRelatedness());
-			response.put("maxRelatedness", wcr.getMaxRelatedness());
-			out.addResponseAsJSON(response);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}	
+		MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
+		User current = _engine.checkExistanceOf(username);
+		WordComparisonResult wcr = null;
+		Output out;
+
+		if( current != null ) wcr = current.getWCR(key);	
+		if( current != null && current.getKey().matches(headerParams.getFirst("usrKey")) && wcr != null) {
+			out = new Output("WCR_DISPLAY", true);
+			JSONObject response = new JSONObject();
+			try {
+				response.put("uri", "/users/"+username+"/storage/"+key);
+				response.put("word1", wcr.getWord1());
+				response.put("word2", wcr.getWord2());
+				response.put("relatedness", wcr.getRelatedness());
+				response.put("maxRelatedness", wcr.getMaxRelatedness());
+				out.addResponseAsJSON(response);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}	
+		}
+		else out = new Output("WCR_DISPLAY", false);
 		return out.toString();
 	}
 
 	@PUT
+	@Consumes("text/plain")
 	@Path("/users/{username}/ontologies/{onto_id}/relatedness/") 
-	public String createRelatednessResult(@PathParam("username") String username ,@Context HttpServletRequest req) {
+	public String createRelatednessResult(@PathParam("username") String username , @Context HttpHeaders hh , String queryContent) {
+		
+		
+		MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
+		User current = _engine.checkExistanceOf(username);
+		Output out;
 		JSONObject jso;
 		String wcrKey = "null";
-		try {
-			jso = new JSONObject(buff(req));
-			JSONArray infos = jso.getJSONArray("infos");
-			JSONArray request = jso.getJSONArray("request");
-			String usrKey = (String) infos.getJSONObject(0).get("usrKey");
-			String word1 = (String) request.getJSONObject(0).get("word1");
-			String word2 = (String) request.getJSONObject(0).get("word2");
-			String maxRelatedness = (String) request.getJSONObject(0).get("maxRelatedness");
-			wcrKey = _engine.proceed(_engine.checkExistanceOf(username), Integer.decode(maxRelatedness), word1, word2);
+		
+		if( current != null && current.getKey().matches(headerParams.getFirst("usrKey")) ) {
+			try {
+				jso = new JSONObject(queryContent);
+				JSONArray request = jso.getJSONArray("request");
+				String word1 = (String) request.getJSONObject(0).get("word1");
+				String word2 = (String) request.getJSONObject(0).get("word2");
+				String maxRelatedness = (String) request.getJSONObject(0).get("maxRelatedness");
+				wcrKey = _engine.proceed(_engine.checkExistanceOf(username), Integer.decode(maxRelatedness), word1, word2);
 
-			if(wcrKey.matches("null")) return new Output("WCR_CREATED", false).toString();
-			else {
-				Output out = new Output("WCR_CREATED", true);
-				JSONObject response = new JSONObject();
-				response.put("uri", "/users/"+_engine.usernameForKey(usrKey)+"/storage/"+wcrKey);
-				out.addResponseAsJSON(response);
-				return out.toString();
+				if(wcrKey.matches("null")) return new Output("WCR_CREATED", false).toString();
+				else {
+					out = new Output("WCR_CREATED", true);
+					JSONObject response = new JSONObject();
+					response.put("uri", "/users/"+username+"/storage/"+wcrKey);
+					out.addResponseAsJSON(response);
+					return out.toString();
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
 			}
-		} catch (JSONException e) {
-			e.printStackTrace();
 		}
 		return new Output("WCR_CREATED", false).toString();
-	}
-
-
-	public String buff(HttpServletRequest req) {
-		BufferedReader reader;
-		try {
-			reader = req.getReader();
-			StringBuilder sb = new StringBuilder();
-			String line = reader.readLine();
-			while (line != null) {
-				sb.append(line + "\n");
-				line = reader.readLine();
-			}
-			reader.close();
-			return sb.toString();
-		} catch (IOException e) {
-			return "null";
-		}
 	}
 } 
