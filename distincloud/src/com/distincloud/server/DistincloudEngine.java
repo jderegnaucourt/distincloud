@@ -23,13 +23,14 @@ public class DistincloudEngine {
 	public DistincloudEngine() {
 		service.start();
 		_persistenceManager = PMF.get().getPersistenceManager();
+
 		_mUsers = new mUsers(_persistenceManager);
 		generateSomeStuff();
 	}
 	
 	private void generateSomeStuff() {
 		try {
-			_mOntologies = new mOntologies("./reducedNoun.xml");
+			_mOntologies = new mOntologies(_mUsers, _persistenceManager, "/WEB-INF/reducedNoun.xml");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -12,7 +12,7 @@ import ontologyInterface.Ontology;
 import ontologyInterface.SemRelation;
 
 public class ExternWord extends AbstractWord implements
-    ExternalWord {
+    ExternalWord, Serializable {
   private static final long serialVersionUID =
       983587581301932786L;
   protected List<ExternSense> senses =

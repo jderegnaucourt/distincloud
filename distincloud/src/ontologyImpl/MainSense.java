@@ -1,6 +1,7 @@
 package ontologyImpl;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +11,7 @@ import ontologyInterface.Sense;
 import ontologyInterface.SemRelation;
 
 public class MainSense extends AbstractSense implements
-    Sense {
+    Sense, Serializable {
   private static final long serialVersionUID =
       8459985237027780028L;
   protected Map<SemRelation, List<MainSense>> localLinks;
