@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -45,7 +46,7 @@ public class UserServices {
 			JSONObject response = new JSONObject();
 			try {
 				response.put("username", current.getUsername());
-				response.put("key", current.getKey());	
+				response.put("userKey", current.getKey());	
 				response.put("storageSize", current.getWCRList().size());	
 				out.addResponseAsJSON(response);
 			} catch (JSONException e) {
@@ -114,6 +115,22 @@ public class UserServices {
 		return new Output("USER_CREATION", false).toString();
 	}
 
+	@POST
+	@Path("/{username}/")
+	@Produces("text/plain")
+	public String requestUserDeletion(@PathParam("username") String username,  @Context HttpHeaders hh ) {
+		
+		User userToDelete = _engine.checkExistanceOf(username);
+		MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
+		
+		if( !( userToDelete == null) && userToDelete.getKey().matches(headerParams.getFirst("usrKey")) ) {		
+			Output out = new Output("USER_DELETION", true);
+			_engine.deleteUser(userToDelete);
+			return out.toString();
+		}
+		return new Output("USER_DELETION", false).toString();
+	}
+
 
 	@GET
 	@Path("/{username}/storage")
@@ -173,16 +190,13 @@ public class UserServices {
 	@Consumes("text/plain")
 	@Path("/{username}/ontologies/{onto_id}/relatedness/") 
 	public String createRelatednessResult(@PathParam("username") String username , @Context HttpHeaders hh , String queryContent) {
-		
-		System.out.println("/{username}/ontologies/{onto_id}/relatedness/");
-		System.out.println("query : "+queryContent);
 
 		MultivaluedMap<String, String> headerParams = hh.getRequestHeaders();
 		User current = _engine.checkExistanceOf(username);
 		Output out;
 		JSONObject jso;
 		String wcrKey = "null";
-		
+
 		if( current != null && current.getKey().matches(headerParams.getFirst("usrKey")) ) {
 			System.out.println("1. Matched user");
 			try {
@@ -190,8 +204,8 @@ public class UserServices {
 				JSONArray request = jso.getJSONArray("request");
 				String word1 = (String) request.getJSONObject(0).get("word1");
 				String word2 = (String) request.getJSONObject(0).get("word2");
-				String maxRelatedness = (String) request.getJSONObject(0).get("maxRelatedness");
-				wcrKey = _engine.proceed(_engine.checkExistanceOf(username), Integer.decode(maxRelatedness), word1, word2);
+				int maxRelatedness =  (Integer) request.getJSONObject(0).get("maxRelatedness");
+				wcrKey = _engine.proceed(_engine.checkExistanceOf(username), maxRelatedness, word1, word2);
 				System.out.println("2. _engine.proceed performed");
 				if(wcrKey.matches("null")) {
 					System.out.println("3. wcrKey.matches(null)");

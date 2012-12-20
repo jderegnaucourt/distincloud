@@ -10,10 +10,12 @@
 	<body>
 		<center>
 			<h1>Distincloud Project</h1>
-			<div id="consoleOutput" style="border: 1px solid #888888; width: 98%; height: 85%; overflow: scroll; text-align: left;"></div>
-			<form method="GET" action="#" onsubmit="console();">
-				<input id="consoleInput" style="border: 1px solid #888888; width: 98%; margin: 1px;" />
-			</form>
 		</center>
+		<div id="consoleOutput" style=""></div>
+		<form method="GET" action="#" onsubmit="console();">
+			<input id="consoleInput" />
+			<input type="button" value="all" onclick="console('all');" />
+			<input type="button" value="clear" onclick="console('clear');" />
+		</form>
 	</body>
 </html>

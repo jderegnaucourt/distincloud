@@ -87,5 +87,10 @@ public class DistincloudEngine {
 	public User fetchUserWithUSername(String username) {
 		return _mUsers.getCachedUser(username);
 	}
+
+	public void deleteUser(User userToDelete) {
+		_mOntologies.deleteOntologiesForUser(userToDelete.getUsername());
+		_mUsers.deleteUser(userToDelete.getUsername());
+	}
 	
 }

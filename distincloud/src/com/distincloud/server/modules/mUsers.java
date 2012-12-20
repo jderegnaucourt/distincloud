@@ -62,6 +62,17 @@ public class mUsers {
 		List<User> queryResult = (List<User>) query.execute();
 		return queryResult;
 	}
+	
+	public void deleteUser(String username) {
+		for(User u : fetchAllUser()) {
+			if(u.getUsername().matches(username)) {
+				if(!_persistenceManager.currentTransaction().isActive()) _persistenceManager.currentTransaction().begin();
+				_persistenceManager.deletePersistent(u);
+				_persistenceManager.currentTransaction().commit();
+			}
+		}
+		refreshUserCache();
+	}
 
 	@SuppressWarnings("unchecked")
 	public boolean UserExists(String username) {
@@ -80,7 +91,7 @@ public class mUsers {
 		for(User usr : _userList) {
 			if ( usr.getUsername().matches(username) ) return usr;
 		}
-		return null;
+		return null ;
 	}
 	
 	public User getCachedUserWithKey(String key) {
@@ -89,4 +100,5 @@ public class mUsers {
 		}
 		return null;
 	}
+
 }

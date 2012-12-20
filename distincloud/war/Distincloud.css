@@ -11,3 +11,19 @@ h1
 	color: #777777;
 	text-align: center;
 }
+
+div#consoleOutput
+{
+	border: 1px solid #888888;
+	width: 98%;
+	height: 85%;
+	overflow: scroll;
+	text-align: left;
+}
+
+input#consoleInput
+{
+	border: 1px solid #888888;
+	width: 85%;
+	margin: 1px;
+}
