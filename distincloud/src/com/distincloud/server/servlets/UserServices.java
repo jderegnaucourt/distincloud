@@ -115,7 +115,7 @@ public class UserServices {
 		return new Output("USER_CREATION", false).toString();
 	}
 
-	@POST
+	@DELETE
 	@Path("/{username}/")
 	@Produces("text/plain")
 	public String requestUserDeletion(@PathParam("username") String username,  @Context HttpHeaders hh ) {
